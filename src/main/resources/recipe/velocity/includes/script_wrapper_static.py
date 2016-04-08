@@ -12,10 +12,14 @@ from StringIO import StringIO
 from cloudify_rest_client import CloudifyClient
 from cloudify import utils
 
-if os.environ['MANAGER_REST_PROTOCOL'] == "https":
-  client = CloudifyClient(host=utils.get_manager_ip(), port=utils.get_manager_rest_service_port(), protocol='https', trust_all=True)
-else:
-  client = CloudifyClient(host=utils.get_manager_ip(), port=utils.get_manager_rest_service_port())
+try:
+    if os.environ['MANAGER_REST_PROTOCOL'] == "https":
+        client = CloudifyClient(host=utils.get_manager_ip(), port=utils.get_manager_rest_service_port(), protocol='https', trust_all=True)
+    else:
+        client = CloudifyClient(host=utils.get_manager_ip(), port=utils.get_manager_rest_service_port())
+except Exception, e:
+    print e
+    client = CloudifyClient(host=utils.get_manager_ip(), port=utils.get_manager_rest_service_port())
 
 def convert_env_value_to_string(envDict):
     for key, value in envDict.items():
